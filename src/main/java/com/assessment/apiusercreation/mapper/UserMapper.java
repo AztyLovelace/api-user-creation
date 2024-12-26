@@ -16,8 +16,8 @@ public class UserMapper {
 		user.setEmail(userInputDTO.getEmail());
 		user.setPassword(userInputDTO.getPassword());
 		
-		if(userInputDTO.getPhoneList()!=null) {
-			user.setPhoneList(userInputDTO.getPhoneList().stream().map(phoneInputDTO -> {
+		if(userInputDTO.getPhones()!=null) {
+			user.setPhoneList(userInputDTO.getPhones().stream().map(phoneInputDTO -> {
 				Phone phone = new Phone();
 				phone.setNumber(phoneInputDTO.getNumber());
 				phone.setCityCode(phoneInputDTO.getCityCode());

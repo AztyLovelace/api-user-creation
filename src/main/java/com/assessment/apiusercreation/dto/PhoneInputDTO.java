@@ -1,12 +1,15 @@
 package com.assessment.apiusercreation.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
-
-import jakarta.validation.constraints.NotEmpty;
-
+@Schema(description = "User's phone information")
 public class PhoneInputDTO {
 	
-	@NotEmpty(message = "The phone number cannot be empty")
+	@NotBlank(message = "Phone number is required")
+	@Pattern(regexp = "^[0-9]{7,10}$", message = "Phone number must be between 7 and 10 digits")
+	@Schema(description = "Phone number", example = "1234567")
 	private String number;
 	private String cityCode;
 	private String countryCode;

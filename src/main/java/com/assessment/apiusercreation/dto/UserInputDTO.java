@@ -2,23 +2,42 @@ package com.assessment.apiusercreation.dto;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
+@Schema(description = "Input data for user creation")
 public class UserInputDTO {
-	
-	@NotEmpty(message = "The name cannot be empty")
-	private String name;
-	
-	@NotEmpty(message = "The email cannot be empty")
-	@Email(message = "The email is not in a valid format")
-	private String email;
-	
-	@NotEmpty(message = "The password cannot be empty")
-	private String password;
-	
-	private List<PhoneInputDTO> phoneList;
 
+	@NotBlank(message = "Name is required")
+	@Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+	@Schema(description = "User's full name", example = "John Doe")
+	private String name;
+
+	@NotBlank(message = "Email is required")
+	@Email(message = "Invalid email format")
+	@Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Email must be in a valid format")
+	@Schema(description = "User's email address", example = "john.doe@example.com")
+	private String email;
+
+	@NotBlank(message = "Password is required")
+	@Pattern(
+		regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$",
+		message = "Password must be at least 8 characters long and include uppercase, lowercase, and numbers"
+	)
+	@Schema(
+		description = "User's password", 
+		example = "Password123",
+		pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$"
+	)
+	private String password;
+
+	@Schema(description = "List of user's phone numbers")
+	private List<PhoneInputDTO> phones;
+
+	// Getters and Setters
 	public String getName() {
 		return name;
 	}
@@ -43,14 +62,11 @@ public class UserInputDTO {
 		this.password = password;
 	}
 
-	public List<PhoneInputDTO> getPhoneList() {
-		return phoneList;
+	public List<PhoneInputDTO> getPhones() {
+		return phones;
 	}
 
-	public void setPhoneList(List<PhoneInputDTO> phoneList) {
-		this.phoneList = phoneList;
+	public void setPhones(List<PhoneInputDTO> phones) {
+		this.phones = phones;
 	}
-	
-	
-	
 }
