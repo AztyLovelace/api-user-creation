@@ -1,20 +1,24 @@
 package com.assessment.apiusercreation.service;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.assessment.apiusercreation.dto.UserInputDTO;
 import com.assessment.apiusercreation.mapper.UserMapper;
 import com.assessment.apiusercreation.model.User;
 import com.assessment.apiusercreation.repository.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-public class UserServiceTest {
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
 	
 	@Mock
 	private UserRepository userRepository;
@@ -23,11 +27,6 @@ public class UserServiceTest {
 	
 	@InjectMocks
 	private UserService userService;
-	
-	@BeforeEach
-	void setUp() {
-		MockitoAnnotations.openMocks(this);
-	}
 	
 	
 	@Test
@@ -43,16 +42,22 @@ public class UserServiceTest {
 		mappedUser.setEmail("test@email.com");
 		mappedUser.setPassword("testPass");
 		
-		when(userMapper.mapToUserInput(userInputDTO)).thenReturn(mappedUser);
-		when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+		assertNotNull(userMapper, "UserMapper should not be null");
 		
+		when(userMapper.mapToUserInput(any(UserInputDTO.class))).thenReturn(mappedUser);
+		when(userRepository.save(any(User.class))).thenReturn(mappedUser);
+		
+
 		User savedUser = userService.saveUser(userInputDTO);
 		
+	
+		assertNotNull(savedUser, "Saved user should not be null");
 		assertNotNull(savedUser.getToken(), "The token should not be null");
 		assertTrue(savedUser.getToken().startsWith("eyJ"), "The token should be a valid JWT");
 		
+		verify(userMapper, times(1)).mapToUserInput(any(UserInputDTO.class));
 		verify(userRepository, times(1)).save(any(User.class));
-		
 	}
 	
 }
